@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\UsersController; // 追記
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -12,11 +13,13 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
+    Route::resource('users', UsersController::class, ['only' => ['index', 'show']]);
 
-    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-    Volt::route('settings/password', 'settings.password')->name('settings.password');
-    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+    // Route::redirect('settings', 'settings/profile');
+
+    // Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
+    // Volt::route('settings/password', 'settings.password')->name('settings.password');
+    // Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
 require __DIR__.'/auth.php';
