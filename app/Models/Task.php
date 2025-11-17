@@ -10,7 +10,10 @@ class Task extends Model
     /** @use HasFactory<\Database\Factories\TaskFactory> */
     use HasFactory;
 
-    protected $fillable = ['content'];
+    protected $fillable = [
+    'status',
+    'content',
+];
 
     /**
      * このタスクを所有するユーザー。（Userモデルとの関係を定義）

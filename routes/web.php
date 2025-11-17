@@ -18,7 +18,8 @@ Route::middleware(['auth'])->group(function () {
     // Volt::route('settings/password', 'settings.password')->name('settings.password');
     // Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::resource('tasklist2', TasksController::class, ['only' => ['store', 'destroy']]);
+    Route::resource('tasks', TasksController::class, ['only' => ['index', 'store', 'destroy', 'show', 'create', 'edit', 'update']]);
+
 
 });
 

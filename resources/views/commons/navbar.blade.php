@@ -28,9 +28,9 @@
                             </ul>
                         </details>
                     </li>
-                    {{-- メッセージ作成ページへのリンク
+                    メッセージ作成ページへのリンク
                     <li><a class="link link-hover" href="{{ route('tasks.create') }}">新規タスクの投稿</a></li>
-                     --}}
+
                 </ul>
             </form>
 

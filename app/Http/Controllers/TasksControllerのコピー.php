@@ -18,16 +18,19 @@ class TasksController extends Controller
     {
         $data = [];
         if (Auth::check()) {
-            // 認証済みユーザーを取得
         $user = Auth::user();
 
         // feed_tasks が正常に呼ばれる部分
-        $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+        $tasks = $user->feed_tasks()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        return view('tasks.index', [
+        $data = [
             'user' => $user,
             'tasks' => $tasks,
-        ]);
+        ];
+
+        return view('welcome', $data);
     }
 
     // 未ログイン時
@@ -60,11 +63,11 @@ class TasksController extends Controller
             'content' => 'required|max:255',
         ]);
         // タスクを作成
-        // 認証済みユーザー（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
         $request->user()->tasks()->create([
-            'status' => $request->status,
-            'content' => $request->content,
-        ]);
+        'status' => $request->status,
+        'content' => $request->content,
+        'user_id' => auth()->id(),
+    ]);
 
     // トップページへリダイレクトさせる
     return redirect('/');
@@ -122,22 +125,22 @@ class TasksController extends Controller
         return redirect('/');
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     * deleteでtasks/（任意のid）にアクセスされた場合の「削除処理」
+     */
     public function destroy(string $id)
     {
-        // idの値で投稿を検索して取得
+        // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
-
-        // 認証済みユーザー（閲覧者）がその投稿の所有者である場合は投稿を削除
+        // 認証済みユーザー（閲覧者）がそのタスクの所有者である場合はタスクを削除
         if (Auth::id() === $task->user_id) {
             $task->delete();
             return back()
                 ->with('success','Delete Successful');
         }
 
-        // 前のURLへリダイレクトさせる
-        return back()
-            ->with('Delete Failed');
+        // トップページへリダイレクトさせる
+        return redirect('/');
     }
-
 }

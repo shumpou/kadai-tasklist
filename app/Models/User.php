@@ -74,5 +74,12 @@ class User extends Authenticatable // implements MustVerifyEmail
         $this->loadCount('tasks');
     }
 
+    public function feed_tasks()
+    {
+        $userIds[] = $this->id;
+        // それらのユーザーが所有する投稿に絞り込む
+        return Task::whereIn('user_id', $userIds);
+    }
+
 
 }
