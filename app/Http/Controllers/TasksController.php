@@ -21,7 +21,6 @@ class TasksController extends Controller
             // 認証済みユーザーを取得
         $user = Auth::user();
 
-        // feed_tasks が正常に呼ばれる部分
         $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
 
         return view('tasks.index', [
@@ -79,6 +78,11 @@ class TasksController extends Controller
         // idの値でメッセージを検索して取得
         $task = Task::findOrFail($id);
 
+        // 自分のタスクでなければトップへ
+        if (Auth::id() !== $task->user_id) {
+            return redirect('/');
+        }
+
         // メッセージ詳細ビューでそれを表示
         return view('tasks.show', [
             'task' => $task,
@@ -93,6 +97,11 @@ class TasksController extends Controller
     {
         // idの値でメッセージを検索して取得
         $task = Task::findOrFail($id);
+
+        // 自分のタスクでなければトップへ
+        if (Auth::id() !== $task->user_id) {
+        return redirect('/');
+        }
 
         // メッセージ編集ビューでそれを表示
         return view('tasks.edit', [
@@ -113,6 +122,12 @@ class TasksController extends Controller
         ]);
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
+
+        // 自分のタスクでなければトップへ
+        if (Auth::id() !== $task->user_id) {
+        return redirect('/');
+        }
+
         // タスクを更新
         $task->status = $request->status;
         $task->content = $request->content;
@@ -131,13 +146,13 @@ class TasksController extends Controller
         // 認証済みユーザー（閲覧者）がその投稿の所有者である場合は投稿を削除
         if (Auth::id() === $task->user_id) {
             $task->delete();
-            return back()
+            return redirect()
                 ->with('success','Delete Successful');
         }
 
         // 前のURLへリダイレクトさせる
-        return back()
-            ->with('Delete Failed');
+        return redirect()
+                ->with('success','Delete Successful');
     }
 
 }
